@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAROUSEL</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .carousel {
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .item {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+
+    .item .bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: 0.5s ease;
+    }
+
+    .item.active .bg {
+      opacity: 1;
+    }
+
+    .item:nth-child(1) .bg { background: #1180ab; }
+    .item:nth-child(2) .bg { background: #ab1111; }
+    .item:nth-child(3) .bg { background: #531b9d; }
+    .item:nth-child(4) .bg { background: #a59d00; }
+    .item:nth-child(5) .bg { background: #037210; }
+
+    .item .bg::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px;
+      height: 500px;
+      background: rgba(255, 255, 255, .8);
+      border-radius: 50%;
+      filter: blur(200px);
+    }
+
+    .info-box {
+      position: absolute;
+      left: 5%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 450px;
+      height: 280px;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    .info-slider {
+      height: 100%;
+      transition: transform 0.6s ease;
+    }
+
+    .info-item {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .info-item h2 {
+      font-size: 40px;
+      line-height: 1;
+    }
+
+    .info-item p {
+      font-size: 16px;
+      margin: 15px 0;
+    }
+
+    .info-item .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 180px;
+      height: 48px;
+      border: 2px solid #fff;
+      border-radius: 40px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .img-box {
+      position: absolute;
+      left: 35%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 800px;
+      height: 700px;
+      overflow: hidden;
+    }
+
+    .img-slider {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      transition: transform 0.6s ease;
+    }
+
+    .img-item {
+      min-width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .img-item img {
+      width: 60%;
+      pointer-events: none;
+      filter: drop-shadow(0 0 10px rgba(0, 0, 0, .2));
+      transform: scale(0.8);
+    }
+
+    .thumb {
+      position: absolute;
+      right: 5%;
+      top: 50%;
+      transform: translateY(-50%);
+      list-style: none;
+    }
+
+    .thumb li {
+      width: 95px;
+      height: 95px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+      cursor: pointer;
+      margin: 20px 0;
+      overflow: hidden;
+      border: 3px solid transparent;
+      transition: 0.3s;
+    }
+
+    .thumb li.selected {
+      border: 3px solid #fff;
+    }
+
+    .thumb li img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .info-box {
+        left: 5%;
+        top: 10%;
+        transform: translateY(0);
+        width: 90%;
+        height: 200px;
+      }
+
+      .info-item h2 {
+        font-size: 28px;
+      }
+
+      .info-item p {
+        font-size: 14px;
+        margin: 10px 0;
+      }
+
+      .info-item .btn {
+        width: 150px;
+        height: 40px;
+        font-size: 14px;
+      }
+
+      .img-box {
+        left: 5%;
+        top: 40%;
+        transform: translateY(0);
+        width: 90%;
+        height: 300px;
+      }
+
+      .img-item img {
+        width: 80%;
+        transform: scale(1);
+      }
+
+      .thumb {
+        right: auto;
+        top: auto;
+        bottom: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .thumb li {
+        width: 60px;
+        height: 60px;
+        margin: 0;
+      }
+
+      .item .bg::before {
+        width: 300px;
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="carousel">
+    <!-- Background items (unchanged, for fading) -->
+    <div class="item active">
+      <div class="bg"></div>
+    </div>
+    <div class="item">
+      <div class="bg"></div>
+    </div>
+    <div class="item">
+      <div class="bg"></div>
+    </div>
+    <div class="item">
+      <div class="bg"></div>
+    </div>
+    <div class="item">
+      <div class="bg"></div>
+    </div>
+
+    <!-- Shared info slider (all info-items as siblings) -->
+    <div class="info-box">
+      <div class="info-slider">
+        <div class="info-item">
+          <h2>Stormrunner</h2>
+          <p>Powerful dragon from the northern skies.</p>
+          <a href="#" class="btn">View More</a>
+        </div>
+        <div class="info-item">
+          <h2>Dropsight</h2>
+          <p>A lightning-fast dragon of storms.</p>
+          <a href="#" class="btn">View More</a>
+        </div>
+        <div class="info-item">
+          <h2>Riot</h2>
+          <p>The furious dragon of chaos.</p>
+          <a href="#" class="btn">View More</a>
+        </div>
+        <div class="info-item">
+          <h2>Sunblast</h2>
+          <p>The fiery dragon of light and heat.</p>
+          <a href="#" class="btn">View More</a>
+        </div>
+        <div class="info-item">
+          <h2>Breakblast</h2>
+          <p>The ultimate dragon of destruction.</p>
+          <a href="#" class="btn">View More</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shared image slider (all img-items as siblings) -->
+    <div class="img-box">
+      <div class="img-slider">
+        <div class="img-item">
+          <img src="dragon 1.png" alt="">
+        </div>
+        <div class="img-item">
+          <img src="dragon 2.png" alt="">
+        </div>
+        <div class="img-item">
+          <img src="dragon 3.png" alt="">
+        </div>
+        <div class="img-item">
+          <img src="dragon 4.png" alt="">
+        </div>
+        <div class="img-item">
+          <img src="dragon 5.png" alt="">
+        </div>
+      </div>
+    </div>
+
+    <!-- Thumbnails -->
+    <ul class="thumb">
+      <li class="selected"><img src="dragon 1.png"></li>
+      <li><img src="dragon 2.png"></li>
+      <li><img src="dragon 3.png"></li>
+      <li><img src="dragon 4.png"></li>
+      <li><img src="dragon 5.png"></li>
+    </ul>
+  </div>
+
+  <script>
+    const thumbs = document.querySelectorAll('.thumb li');
+    const infoSlider = document.querySelector('.info-slider');  // Now a single element
+    const imgSlider = document.querySelector('.img-slider');    // Now a single element
+    const items = document.querySelectorAll('.item');
+
+    let index = 0;
+
+    thumbs.forEach((thumb, ind) => {
+      thumb.addEventListener('click', () => {
+        
+        // Remove "selected" from previous thumb safely
+        const prevThumb = document.querySelector('.thumb .selected');
+        if (prevThumb) prevThumb.classList.remove('selected');
+        thumb.classList.add('selected');
+
+        // Update index
+        index = ind;
+
+        // Move Info Slider (vertical, now with multiple items)
+        infoSlider.style.transform = `translateY(${index * -100}%)`; 
+
+        // Move Image Slider (horizontal, now with multiple items)
+        imgSlider.style.transform = `translateX(${index * -100}%)`;
+
+        // Switch Active Item safely (for background fading)
+        const prevActive = document.querySelector('.item.active');
+        if (prevActive) prevActive.classList.remove('active');
+        items[index].classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
